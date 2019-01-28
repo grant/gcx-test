@@ -1,14 +1,15 @@
 const gcx = require('gcx');
 
 const {readdirSync, lstatSync} = require('fs');
-const TARGET_DIR = './functions/test1';
 const CREDS_FILE_LOCATION = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const CREDS_FILE = require(CREDS_FILE_LOCATION);
 console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
 
 /**
  * Deploys a cloud function.
- * @param {string} name The name of the function in the TARGET_DIR.
+ * @param {string} name The name of the function in the directory.
+ * @param {string} targetDir The path to the source directory.
+ * @example 
  */
 const deploy = async (name, targetDir) => {
   console.log(`Deploying ${name}...`);
@@ -33,15 +34,18 @@ const deploy = async (name, targetDir) => {
 
 /**
  * Lists the exported functions in a file.
+ * @param {string} filename The file.
+ * @returns {string[]} A list of function names.
  */
-const listFunctions = (dir) => {
-  const fns = require(dir);
+const listFunctions = (filename) => {
+  const fns = require(filename);
   const fnNames = Object.keys(fns);
   return fnNames;
 };
 
 /**
  * Gets a list of directories within the functions directory.
+ * @returns {string[]} A list of paths to directories.
  */
 const getFunctionDirectories = () => {
   const BASE_DIR = './functions';
@@ -56,17 +60,6 @@ const getFunctionDirectories = () => {
 };
 
 /**
- * Tests the fn directories.
- */
-const testFnDirs = () => {
-  const fndirs = getFunctionDirectories();
-  fndirs.map(fndir => {
-    const fns = listFunctions(fndir);
-    console.log(`- ${fndir}: [${fns}]`);
-  });
-}
-
-/**
  * Deploys all functions in all directories.
  */
 const deployAll = () => {
@@ -76,6 +69,18 @@ const deployAll = () => {
     fns.map((fn) => {
       deploy(fn, TARGET_DIR);
     });
+  });
+}
+
+
+/**
+ * Tests the fn directories.
+ */
+const testFnDirs = () => {
+  const fndirs = getFunctionDirectories();
+  fndirs.map(fndir => {
+    const fns = listFunctions(fndir);
+    console.log(`- ${fndir}: [${fns}]`);
   });
 }
 
