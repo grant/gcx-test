@@ -1,31 +1,45 @@
 const gcx = require('gcx');
-console.log('Testing...');
 
-const run = async () => {
+const TARGET_DIR = './functions/test1';
+const CREDS_FILE_LOCATION = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const CREDS_FILE = require(CREDS_FILE_LOCATION);
+console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
+
+/**
+ * Deploys a cloud function.
+ * @param {string} name The name of the function in the TARGET_DIR.
+ */
+const deploy = async (name) => {
+  console.log(`Deploying ${name}...`);
   try {
     const dep = await gcx.deploy({
-      name: 'function-name',
+      name,
       region: 'us-central1',
       runtime: 'nodejs8',
-      targetDir: './functions',
+      targetDir: TARGET_DIR, // important!
       description: 'test desc',
       retry: true,
-      // memory:
-      // network
-      maxInstances: 10,
-      // timeout
+      // maxInstances: 10, Alpha feature that needs whitelisting
       triggerHTTP: true,
-      // triggerTopic
-      // triggerBucket
-      // triggerResource
       triggerEvent: 'http',
-      entryPoint: 'helloWorld',
-      project: 'test-grant',
+      entryPoint: name,
+      project: CREDS_FILE.project_id,
     });
-    console.log(dep.response);
   } catch (e) {
-    console.log(e.response.data.error.errors[0]);
+    console.log(`Errors: ${e}`);
   }
 };
 
-run();
+/**
+ * Lists the exported functions in a file.
+ */
+const listFunctions = (dir) => {
+  const fns = require(dir);
+  const fnNames = Object.keys(fns);
+  return fnNames;
+};
+
+const fns = listFunctions(TARGET_DIR);
+fns.map((fn) => {
+  deploy(fn);
+});
