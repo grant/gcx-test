@@ -63,11 +63,11 @@ const getFunctionDirectories = () => {
  * Deploys all functions in all directories.
  */
 const deployAll = () => {
-  const fndirs = getFunctionDirectories();
-  fndirs.map(fndir => {
-    const fns = listFunctions(fndir);
+  const functionDirectories = getFunctionDirectories();
+  functionDirectories.map(directory => {
+    const fns = listFunctions(directory);
     fns.map((fn) => {
-      deploy(fn, TARGET_DIR);
+      deploy(fn, directory);
     });
   });
 }
@@ -77,10 +77,10 @@ const deployAll = () => {
  * Tests the fn directories.
  */
 const testFnDirs = () => {
-  const fndirs = getFunctionDirectories();
-  fndirs.map(fndir => {
-    const fns = listFunctions(fndir);
-    console.log(`- ${fndir}: [${fns}]`);
+  const functionDirectories = getFunctionDirectories();
+  functionDirectories.map(directory => {
+    const fns = listFunctions(directory);
+    console.log(`- ${directory}: [${fns}]`);
   });
 }
 
