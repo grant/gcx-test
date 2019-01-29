@@ -4,7 +4,7 @@
   "description": "Requires auth setup defined here: https://github.com/JustinBeckwith/gcx",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p ./functions/",
+    "build": "tsc -p . && tsc -p ./functions/",
     "test": "node .",
     "all": "npm run build && npm run test"
   },
