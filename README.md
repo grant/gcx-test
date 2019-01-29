@@ -5,6 +5,11 @@ https://github.com/JustinBeckwith/gcx
 
 - https://console.cloud.google.com/functions/list?project=test-grant
 
+## Deploy functions
+
+```sh
+tsc -p ./functions/ && node .
+```
 
 ## Test
 

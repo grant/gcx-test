@@ -1,14 +1,28 @@
 {
   "name": "gcx-test",
   "version": "1.0.0",
-  "description": "",
+  "description": "Requires auth setup defined here: https://github.com/JustinBeckwith/gcx",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p ./functions/",
+    "test": "node .",
+    "all": "npm run build && npm run test"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "gcx": "0.0.3"
-  }
+    "gcx": "0.0.3",
+    "googleapis": "^37.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grant/gcx-test.git"
+  },
+  "bugs": {
+    "url": "https://github.com/grant/gcx-test/issues"
+  },
+  "homepage": "https://github.com/grant/gcx-test#readme"
 }

@@ -34,7 +34,6 @@ const deploy = async ({ name, entryPoint, targetDir }) => {
   } catch (e) {
     console.log(`Errors: ${e}`);
   }
-  console.log(`Deployed ${name}!`);
 };
 
 /**
