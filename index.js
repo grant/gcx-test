@@ -14,7 +14,7 @@ console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
 const deploy = async (name, targetDir) => {
   console.log(`Deploying ${name}...`);
   try {
-    const dep = await gcx.deploy({
+    await gcx.deploy({
       name,
       region: 'us-central1',
       runtime: 'nodejs8',
@@ -30,6 +30,7 @@ const deploy = async (name, targetDir) => {
   } catch (e) {
     console.log(`Errors: ${e}`);
   }
+  console.log(`Deployed ${name}!`);
 };
 
 /**
@@ -71,7 +72,6 @@ const deployAll = () => {
     });
   });
 }
-
 
 /**
  * Tests the fn directories.
