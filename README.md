@@ -22,3 +22,7 @@ export GCLOUD_PROJECT=test-grant
 export GOOGLE_APPLICATION_CREDENTIALS="./creds.json"
 node .
 ```
+
+## TODO
+
+- Publish types to be consumable outside functions repo with `tsc -d`.
