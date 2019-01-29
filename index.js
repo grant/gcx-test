@@ -7,11 +7,12 @@ console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
 
 /**
  * Deploys a cloud function.
- * @param {string} name The name of the function in the directory.
+ * @param {string} name The title of the function endpoint.
+ * @param {string} entryPoint The function name.
  * @param {string} targetDir The path to the source directory.
  * @example 
  */
-const deploy = async (name, targetDir) => {
+const deploy = async ({name, entryPoint, targetDir}) => {
   console.log(`Deploying ${name}...`);
   try {
     await gcx.deploy({
@@ -24,7 +25,7 @@ const deploy = async (name, targetDir) => {
       // maxInstances: 10, Alpha feature that needs whitelisting
       triggerHTTP: true,
       triggerEvent: 'http',
-      entryPoint: name,
+      entryPoint,
       project: CREDS_FILE.project_id,
     });
   } catch (e) {
@@ -48,13 +49,13 @@ const listFunctions = (filename) => {
  * Gets a list of directories within the functions directory.
  * @returns {string[]} A list of paths to directories.
  */
+const BASE_DIR = './functions';
 const getFunctionDirectories = () => {
-  const BASE_DIR = './functions';
   const directories = [];
   readdirSync(BASE_DIR).map((subdir) => {
     const dir = `${BASE_DIR}/${subdir}`;
     if (lstatSync(dir).isDirectory()) {
-      directories.push(dir);
+      directories.push(subdir);
     }
   });
   return directories;
@@ -66,9 +67,14 @@ const getFunctionDirectories = () => {
 const deployAll = () => {
   const functionDirectories = getFunctionDirectories();
   functionDirectories.map(directory => {
-    const fns = listFunctions(directory);
-    fns.map((fn) => {
-      deploy(fn, directory);
+    const absoluteDir = `${BASE_DIR}/${directory}`
+    const functionNames = listFunctions(absoluteDir);
+    functionNames.map((functionName) => {
+      deploy({
+        name: `${directory}-${functionName}`,
+        entryPoint: functionName,
+        targetDir: absoluteDir,
+      });
     });
   });
 }
