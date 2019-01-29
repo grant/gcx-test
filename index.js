@@ -1,9 +1,12 @@
 const gcx = require('gcx');
 
-const {readdirSync, lstatSync} = require('fs');
+const { readdirSync, lstatSync } = require('fs');
 const CREDS_FILE_LOCATION = process.env.GOOGLE_APPLICATION_CREDENTIALS;
 const CREDS_FILE = require(CREDS_FILE_LOCATION);
 console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
+
+const REGION = 'us-central1';
+const PROJECT_ID = CREDS_FILE.project_id;
 
 /**
  * Deploys a cloud function.
@@ -12,12 +15,12 @@ console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
  * @param {string} targetDir The path to the source directory.
  * @example 
  */
-const deploy = async ({name, entryPoint, targetDir}) => {
+const deploy = async ({ name, entryPoint, targetDir }) => {
   console.log(`Deploying ${name}...`);
   try {
     await gcx.deploy({
       name,
-      region: 'us-central1',
+      region: REGION,
       runtime: 'nodejs8',
       targetDir, // important!
       description: 'test desc',
@@ -26,7 +29,7 @@ const deploy = async ({name, entryPoint, targetDir}) => {
       triggerHTTP: true,
       triggerEvent: 'http',
       entryPoint,
-      project: CREDS_FILE.project_id,
+      project: PROJECT_ID,
     });
   } catch (e) {
     console.log(`Errors: ${e}`);
@@ -64,19 +67,29 @@ const getFunctionDirectories = () => {
 /**
  * Deploys all functions in all directories.
  */
-const deployAll = () => {
+const deployAll = async () => {
   const functionDirectories = getFunctionDirectories();
   functionDirectories.map(directory => {
     const absoluteDir = `${BASE_DIR}/${directory}`
     const functionNames = listFunctions(absoluteDir);
-    functionNames.map((functionName) => {
-      deploy({
-        name: `${directory}-${functionName}`,
+    functionNames.map(async (functionName) => {
+      const name = `${directory}-${functionName}`;
+      await deploy({
+        name,
         entryPoint: functionName,
         targetDir: absoluteDir,
       });
+      console.log(getURL(name));
     });
   });
+}
+
+/**
+ * Gets the HTTP trigger URL for the Cloud Function
+ * @param {string} functionName The function name.
+ */
+const getURL = (functionName) => {
+  return `https://${REGION}-${PROJECT_ID}.cloudfunctions.net/${functionName}`;
 }
 
 /**
