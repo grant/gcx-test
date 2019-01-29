@@ -7,8 +7,7 @@ const discovery = google.discovery({ version: 'v1' }) as discovery_v1.Discovery;
 exports.list = async (req: any, res: any) => {
   const apis = await discovery.apis.list();
   const items = apis.data.items || [];
-  // res.status(200).send(message + 'apis: ' + items.length);
-  res.status(200).json(items, null, 2);
+  res.status(200).json(items);
 };
 
 /**
