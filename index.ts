@@ -1,5 +1,4 @@
-const gcx = require('gcx');
-
+import {deploy} from 'gcx';
 const { readdirSync, lstatSync } = require('fs');
 const CREDS_FILE_LOCATION = process.env.GOOGLE_APPLICATION_CREDENTIALS || '';
 const CREDS_FILE = require(CREDS_FILE_LOCATION);
@@ -8,6 +7,12 @@ console.log(`Using creds: ${CREDS_FILE_LOCATION}`);
 const REGION = 'us-central1';
 const PROJECT_ID = CREDS_FILE.project_id;
 
+interface iDeployFunction {
+  name: string,
+  entryPoint: string,
+  targetDir: string,
+};
+
 /**
  * Deploys a cloud function.
  * @param {string} name The title of the function endpoint.
@@ -15,10 +20,10 @@ const PROJECT_ID = CREDS_FILE.project_id;
  * @param {string} targetDir The path to the source directory.
  * @example 
  */
-const deploy = async ({ name, entryPoint, targetDir }: any) => {
+const deployFunction = async ({ name, entryPoint, targetDir }: iDeployFunction) => {
   console.log(`Deploying ${name}...`);
   try {
-    await gcx.deploy({
+    await deploy({
       name,
       region: REGION,
       runtime: 'nodejs8',
@@ -67,13 +72,17 @@ const getFunctionDirectories = () => {
  * Deploys all functions in all directories.
  */
 const deployAll = async () => {
+
+  // export GCLOUD_PROJECT=test-grant
+  // export GOOGLE_APPLICATION_CREDENTIALS="./creds.json"
+
   const functionDirectories = getFunctionDirectories();
   functionDirectories.map((directory: string) => {
     const absoluteDir = `${BASE_DIR}/${directory}`
     const functionNames = listFunctions(absoluteDir);
     functionNames.map(async (functionName) => {
       const name = `${directory}-${functionName}`;
-      await deploy({
+      await deployFunction({
         name,
         entryPoint: functionName,
         targetDir: absoluteDir,

@@ -11,11 +11,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "gcx": "0.0.3",
-    "googleapis": "^37.0.0"
+    "gcx": "^0.1.0",
+    "googleapis": "^37.1.0"
   },
   "devDependencies": {
-    "@types/node": "^10.12.19"
+    "@types/node": "^10.12.21"
   },
   "repository": {
     "type": "git",

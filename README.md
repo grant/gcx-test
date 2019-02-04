@@ -26,3 +26,4 @@ node .
 ## TODO
 
 - Publish types to be consumable outside functions repo with `tsc -d`.
+- Corp Issue Tracker API

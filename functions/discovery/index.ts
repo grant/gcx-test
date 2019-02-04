@@ -17,7 +17,7 @@ exports.api = async (req: any, res: any) => {
   const { api, version } = req.query;
   if (!api || !version) {
     res.status(400).json({
-      error: 'Bad params. "api" & "version" query params required'
+      error: 'Bad params. `api` & `version` query params required'
     });
   }
   const rest = await discovery.apis.getRest({

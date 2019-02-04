@@ -8,6 +8,7 @@
       "es6",
       "es2017"
     ],
+    "experimentalDecorators": true,
     "strict": true,
   },
   "moduleResolution": "node",
